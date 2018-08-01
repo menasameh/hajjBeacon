@@ -19,7 +19,7 @@ export default class HomeScreen extends Component {
     super(props)
     this.keyboardHeight = new Animated.Value(0)
     this.state = {
-      messages: [],
+      messages: [{ message: 'somcvdc text', sender: 'motawef' }],
       messageToSend: '',
       isKeyboardOpen: false,
     }
@@ -31,6 +31,7 @@ export default class HomeScreen extends Component {
     beacons.startBeacons()
     beacons.registerBeaconsListeners()
     firebase.listenToNode('chat', messages => {
+      console.log(messages)
       this.setState({
         messages: Object.keys(messages).map(key => ({
           ...messages[key],
@@ -77,21 +78,10 @@ export default class HomeScreen extends Component {
 
   _sendMessage = _ => {
     if (this.state.messageToSend.trim().length) {
-      firebase
-        .getNode('chat')
-        .then(data => {
-          console.log(data)
-          Object.keys(data).forEach(item => {
-            firebase.add(`chat/${item}`, {
-              message: this.state.messageToSend.trim(),
-              sender: 'mentor',
-            })
-          })
-        })
-        .catch(error => {
-          console.log(error)
-        })
-
+      firebase.add('chat', {
+        message: this.state.messageToSend.trim(),
+        sender: 'hajj 1',
+      })
       this.setState({
         messageToSend: '',
       })
@@ -126,7 +116,7 @@ export default class HomeScreen extends Component {
             style={[styles.baseTextInput, styles.messageTextInput]}
             onChangeText={this._onMessageTextChanged}
             value={this.state.messageToSend}
-            placeholder={'send a notification to all your hajjs'}
+            placeholder={'send a message'}
           />
         </View>
         {this._renderAccessoryButton()}
@@ -135,6 +125,18 @@ export default class HomeScreen extends Component {
   }
 
   render() {
-    return <View style={styles.container}>{this._renderFooter()}</View>
+    return (
+      <View style={styles.container}>
+        <FlatList
+          inverted
+          data={this.state.messages}
+          renderItem={this._renderItem}
+          style={styles.resultsListContainer}
+          keyExtractor={(_, index) => index.toString()}
+          showsVerticalScrollIndicator={true}
+        />
+        {this._renderFooter()}
+      </View>
+    )
   }
 }

@@ -27,6 +27,7 @@ const getNode = path => {
     .database()
     .ref(path)
     .once('value')
+    .then(data => data.val())
 }
 
 const add = (path, obj) => {
