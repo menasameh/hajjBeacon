@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import {
   View,
   Text,
+  Image,
   TouchableOpacity,
   TextInput,
   Keyboard,
@@ -76,14 +77,12 @@ export default class HomeScreen extends Component {
   }
 
   _sendMessage = _ => {
-    if (this.state.imageSource) {
-      this.props.sendImageMessage(this.state.imageSource)
-      this.setState({
-        imageSource: null,
-      })
-    }
     if (this.state.messageToSend.trim().length) {
-      this.props.sendMessage(this.state.messageToSend.trim())
+      //   this.props.sendMessage(this.state.messageToSend.trim())
+      firebase.add('chat', {
+        message: this.state.messageToSend.trim(),
+        sender: 'hajj 1',
+      })
       this.setState({
         messageToSend: '',
       })
@@ -115,12 +114,7 @@ export default class HomeScreen extends Component {
         <View style={{ flexDirection: 'row' }}>
           <TextInput
             multiline
-            style={[
-              styles.baseTextInput,
-              this.state.messageToSend.length
-                ? styles.messageTextInput
-                : styles.placeholderTextInput,
-            ]}
+            style={[styles.baseTextInput, styles.messageTextInput]}
             onChangeText={this._onMessageTextChanged}
             value={this.state.messageToSend}
             placeholder={'send a message'}

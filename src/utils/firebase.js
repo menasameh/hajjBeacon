@@ -29,8 +29,16 @@ const getNode = path => {
     .once('value')
 }
 
+const add = (path, obj) => {
+  firebase
+    .database()
+    .ref(path)
+    .push(obj)
+}
+
 export default {
   initApp,
   listenToNode,
   getNode,
+  add,
 }

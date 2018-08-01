@@ -7,7 +7,6 @@ const styles = StyleSheet.create({
     flex: 1,
     alignItems: 'stretch',
     justifyContent: 'flex-start',
-    marginBottom: 100,
   },
   headerContainer: {
     height: 50,
@@ -62,12 +61,9 @@ const styles = StyleSheet.create({
   },
   resultsListContainer: {
     flex: 1,
+    marginHorizontal: 10,
   },
-  footerContainer: {
-    backgroundColor: 'red',
-    borderWidth: 1,
-    borderColor: 'blue',
-  },
+  footerContainer: {},
   iphoneXFooterContainer: {
     paddingBottom: 10,
   },
