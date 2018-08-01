@@ -1,116 +1,148 @@
 import React, { Component } from 'react'
-import { View, Text } from 'react-native'
-import { DeviceEventEmitter } from 'react-native'
-import Beacons from 'react-native-beacons-manager'
-import { PermissionsAndroid } from 'react-native'
+import {
+  View,
+  Text,
+  TouchableOpacity,
+  TextInput,
+  Keyboard,
+  Animated,
+  FlatList,
+} from 'react-native'
+import styles from './styles'
+import _ from 'underscore'
+
+import { beacons, firebase } from '../../utils'
 
 export default class HomeScreen extends Component {
+  constructor(props) {
+    super(props)
+    this.keyboardHeight = new Animated.Value(0)
+    this.state = {
+      messages: [{ message: 'somcvdc text', sender: 'motawef' }],
+      messageToSend: '',
+      isKeyboardOpen: false,
+    }
+  }
+
   componentDidMount() {
-    this.requestPermission()
-    this.startBeacons()
-    this.registerBeaconsListeners()
+    firebase.initApp()
+    beacons.requestPermission()
+    beacons.startBeacons()
+    beacons.registerBeaconsListeners()
+    firebase.listenToNode('chat', messages => {
+      console.log(messages)
+      this.setState({
+        messages: Object.keys(messages).map(key => ({
+          ...messages[key],
+          id: key,
+        })),
+      })
+    })
+    this.keyboardWillShowListener = Keyboard.addListener(
+      'keyboardWillShow',
+      this.keyboardWillShow.bind(this)
+    )
+    this.keyboardWillHideListener = Keyboard.addListener(
+      'keyboardWillHide',
+      this.keyboardWillHide.bind(this)
+    )
   }
 
   componentWillUnmount() {
-    this.stopBeacons()
-    this.removeListeners()
+    beacons.stopBeacons()
+    beacons.removeListeners()
+    this.keyboardWillShowListener.remove()
+    this.keyboardWillHideListener.remove()
   }
 
-  requestPermission = () => {
-    try {
-      const granted = PermissionsAndroid.request(
-        PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
-        {
-          title: 'Location Permission',
-          message: 'Activeev needs to access your location.',
-        }
-      )
-      console.log('here', granted)
-      if (granted === PermissionsAndroid.RESULTS.GRANTED) {
-        console.log('Location Permitted')
-      } else {
-        console.log('Location permission denied')
-      }
-    } catch (err) {
-      console.warn(err)
+  keyboardWillShow(event) {
+    this.setState({ isKeyboardOpen: true })
+    Animated.timing(this.keyboardHeight, {
+      duration: event.duration,
+      toValue: event.endCoordinates.height - 50,
+    }).start()
+  }
+
+  keyboardWillHide(event) {
+    this.setState({ isKeyboardOpen: false })
+    Animated.timing(this.keyboardHeight, {
+      duration: event.duration,
+      toValue: 0,
+    }).start()
+  }
+
+  _renderItem = ({ item }) => {
+    return <Text>{`msg: ${item.message}, sender: ${item.sender}`}</Text>
+  }
+
+  _sendMessage = _ => {
+    if (this.state.imageSource) {
+      this.props.sendImageMessage(this.state.imageSource)
+      this.setState({
+        imageSource: null,
+      })
     }
-    PermissionsAndroid.check(
-      PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION
+    if (this.state.messageToSend.trim().length) {
+      this.props.sendMessage(this.state.messageToSend.trim())
+      this.setState({
+        messageToSend: '',
+      })
+    }
+  }
+
+  _renderAccessoryButton() {
+    if (!this.state.messageToSend.trim().length) return null
+    return (
+      <TouchableOpacity
+        onPress={this._sendMessage}
+        style={styles.sendButtonContainer}
+      >
+        <Image
+          style={styles.sendButton}
+          source={require('./images/sendMessage.png')}
+        />
+      </TouchableOpacity>
     )
-      .then(data => {
-        console.log('success', data)
-      })
-      .catch(data => {
-        console.log('fail', data)
-      })
   }
 
-  startBeacons = () => {
-    Beacons.detectIBeacons()
-    const identifier = 'HajjAndroid'
-    const uuid = 'd77657c4-52a7-426f-b9d0-d71e10798c8a'
-    region = {
-      identifier,
-      uuid,
-    }
-    Beacons.startMonitoringForRegion(region)
-      .then(() => console.log('Beacons monitoring started succesfully'))
-      .catch(error =>
-        console.log(`Beacons monitoring not started, error: ${error}`)
-      )
-    Beacons.startRangingBeaconsInRegion(identifier, uuid)
-      .then(() => console.log('Beacons ranging started succesfully'))
-      .catch(error =>
-        console.log(`Beacons ranging not started, error: ${error}`)
-      )
-    Beacons.checkTransmissionSupported()
-      .then(data => {
-        console.log('bluetooth', data)
-      })
-      .catch(error => {
-        console.log('bluetooth', error)
-      })
-  }
+  _onMessageTextChanged = messageToSend => this.setState({ messageToSend })
 
-  registerBeaconsListeners = () => {
-    DeviceEventEmitter.addListener('beaconsDidRange', data => {
-      if (data && data.beacons && data.beacons.length) {
-        console.log('Found range!', data.beacons[0])
-      }
-    })
-    DeviceEventEmitter.addListener('regionDidEnter', data => {
-      console.log('Found enter!', data)
-    })
-    DeviceEventEmitter.addListener('regionDidExit', data => {
-      console.log('Found exit!', data)
-    })
-  }
-
-  stopBeacons = () => {
-    Beacons.stopRangingBeaconsInRegion(identifier, uuid)
-      .then(() => console.log('Beacons ranging stopped succesfully'))
-      .catch(error =>
-        console.log(`Beacons ranging not stopped, error: ${error}`)
-      )
-
-    // stop monitoring beacons:
-    Beacons.stopMonitoringForRegion(region)
-      .then(() => console.log('Beacons monitoring stopped succesfully'))
-      .catch(error =>
-        console.log(`Beacons monitoring not stopped, error: ${error}`)
-      )
-  }
-
-  removeListeners = () => {
-    this.beaconsDidRangeEvent.remove()
-    this.regionDidEnterEvent.remove()
-    this.regionDidExitEvent.remove()
+  _renderFooter() {
+    return (
+      <Animated.View
+        style={[{ marginBottom: this.keyboardHeight }, styles.footerContainer]}
+      >
+        <View style={{ flexDirection: 'row' }}>
+          <TextInput
+            multiline
+            style={[
+              styles.baseTextInput,
+              this.state.messageToSend.length
+                ? styles.messageTextInput
+                : styles.placeholderTextInput,
+            ]}
+            onChangeText={this._onMessageTextChanged}
+            value={this.state.messageToSend}
+            placeholder={'send a message'}
+          />
+        </View>
+        {this._renderAccessoryButton()}
+      </Animated.View>
+    )
   }
 
   render() {
     return (
-      <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
-        <Text>Home Screen</Text>
+      <View style={styles.container}>
+        <FlatList
+          inverted
+          data={this.state.messages}
+          renderItem={this._renderItem}
+          style={styles.resultsListContainer}
+          keyExtractor={(_, index) => index.toString()}
+          showsVerticalScrollIndicator={true}
+        />
+        {this._renderFooter()}
       </View>
     )
   }
