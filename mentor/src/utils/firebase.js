@@ -1,6 +1,9 @@
 import firebase from 'firebase'
 
+this.initialised = false
+
 const initApp = () => {
+  if (this.initialised) return
   var config = {
     apiKey: 'AIzaSyCW8ZFlQSmBhdbR7Y4phrJXcK_kAD5Jfuc',
     authDomain: 'hajjbeacon.firebaseapp.com',
@@ -11,6 +14,7 @@ const initApp = () => {
   }
 
   firebase.initializeApp(config)
+  this.initialised = true
 }
 
 const listenToNode = (path, callback) => {
@@ -31,15 +35,19 @@ const getNode = path => {
 }
 
 const add = (path, obj) => {
+  console.log(obj)
   firebase
     .database()
     .ref(path)
     .push(obj)
 }
 
+const time = firebase.database.ServerValue.TIMESTAMP
+
 export default {
   initApp,
   listenToNode,
   getNode,
   add,
+  time,
 }

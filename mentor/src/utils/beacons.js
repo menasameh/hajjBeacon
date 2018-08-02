@@ -10,7 +10,7 @@ const requestPermission = () => {
       PermissionsAndroid.PERMISSIONS.ACCESS_FINE_LOCATION,
       {
         title: 'Location Permission',
-        message: 'Activeev needs to access your location.',
+        message: 'hajb needs to access your location.',
       }
     )
     log && console.log('here', granted)
@@ -75,6 +75,12 @@ const registerBeaconsListeners = () => {
 }
 
 const stopBeacons = () => {
+  const identifier = 'HajjAndroid'
+  const uuid = 'd77657c4-52a7-426f-b9d0-d71e10798c8a'
+  region = {
+    identifier,
+    uuid,
+  }
   Beacons.stopRangingBeaconsInRegion(identifier, uuid)
     .then(() => log && console.log('Beacons ranging stopped succesfully'))
     .catch(
@@ -92,9 +98,9 @@ const stopBeacons = () => {
 }
 
 const removeListeners = () => {
-  this.beaconsDidRangeEvent.remove()
-  this.regionDidEnterEvent.remove()
-  this.regionDidExitEvent.remove()
+  this.beaconsDidRangeEvent && this.beaconsDidRangeEvent.remove()
+  this.regionDidEnterEvent && this.regionDidEnterEvent.remove()
+  this.regionDidExitEvent && this.regionDidExitEvent.remove()
 }
 
 export default {

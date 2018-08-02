@@ -63,7 +63,9 @@ const styles = StyleSheet.create({
     flex: 1,
     marginHorizontal: 10,
   },
-  footerContainer: {},
+  footerContainer: {
+    flexDirection: 'row',
+  },
   iphoneXFooterContainer: {
     paddingBottom: 10,
   },
@@ -89,6 +91,7 @@ const styles = StyleSheet.create({
   messageTextInput: {
     paddingTop: 7,
     paddingBottom: 5,
+    flex: 1,
   },
   placeholderTextInput: {
     paddingVertical: 7,

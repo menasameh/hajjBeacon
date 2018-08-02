@@ -121,6 +121,19 @@ export default class HomeScreen extends Component {
         style={[{ marginBottom: this.keyboardHeight }, styles.footerContainer]}
       >
         <View style={{ flexDirection: 'row' }}>
+          <View
+            style={{
+              left: 11,
+              bottom: 13,
+            }}
+          >
+            <TouchableOpacity onPress={this._sendMessage}>
+              <Image
+                style={styles.sendButton}
+                source={require('./images/sendMessage.png')}
+              />
+            </TouchableOpacity>
+          </View>
           <TextInput
             multiline
             style={[styles.baseTextInput, styles.messageTextInput]}

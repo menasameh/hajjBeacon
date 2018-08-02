@@ -79,7 +79,6 @@ const styles = StyleSheet.create({
     borderColor: {}.mediumGrey,
 
     marginVertical: 10,
-    marginLeft: 13,
     marginRight: 7,
 
     paddingLeft: 17,
