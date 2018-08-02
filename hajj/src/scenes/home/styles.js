@@ -5,8 +5,36 @@ export const imageSourceIconWidth = 24
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+
     alignItems: 'stretch',
     justifyContent: 'flex-start',
+    backgroundColor: '#218c6c',
+  },
+  contentContainer: {
+    marginHorizontal: 20,
+  },
+  logo: {
+    width: 184,
+    height: 192,
+    marginTop: 50,
+    marginBottom: 30,
+    alignSelf: 'center',
+  },
+  button: {
+    height: 60,
+    borderRadius: 8,
+    marginVertical: 5,
+    backgroundColor: '#000000',
+    justifyContent: 'center',
+  },
+  buttonText: {
+    fontFamily: 'Roboto',
+    fontSize: 16,
+    fontWeight: '900',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#ffffff',
   },
   headerContainer: {
     height: 50,
@@ -67,24 +95,20 @@ const styles = StyleSheet.create({
   iphoneXFooterContainer: {
     paddingBottom: 10,
   },
-  baseTextInput: {
-    backgroundColor: {}.white,
-    fontFamily: {}.robotoRegular,
+  textInput: {
+    borderRadius: 8,
+    backgroundColor: '#ffffff',
+
+    paddingVertical: 16,
+    paddingHorizontal: 20,
+
+    marginVertical: 5,
+
+    fontFamily: 'Roboto',
     fontSize: 14,
-    lineHeight: 16,
-    maxHeight: 64,
-
-    borderRadius: 20,
-    borderWidth: 1,
-    borderColor: {}.mediumGrey,
-
-    marginVertical: 10,
-    marginLeft: 13,
-    marginRight: 7,
-
-    paddingLeft: 17,
-    paddingRight: 30,
-    flex: 1,
+    fontWeight: 'normal',
+    fontStyle: 'normal',
+    letterSpacing: 0,
   },
   messageTextInput: {
     paddingTop: 7,

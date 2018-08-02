@@ -26,19 +26,18 @@ export default class HomeScreen extends Component {
   }
 
   componentDidMount() {
-    firebase.initApp()
+    // firebase.initApp()
     beacons.requestPermission()
     beacons.startBeacons()
     beacons.registerBeaconsListeners()
-    firebase.listenToNode('chat', messages => {
-      console.log(messages)
-      this.setState({
-        messages: Object.keys(messages).map(key => ({
-          ...messages[key],
-          id: key,
-        })),
-      })
-    })
+    // firebase.listenToNode('chat', messages => {
+    //   this.setState({
+    //     messages: Object.keys(messages).map(key => ({
+    //       ...messages[key],
+    //       id: key,
+    //     })),
+    //   })
+    // })
     this.keyboardWillShowListener = Keyboard.addListener(
       'keyboardWillShow',
       this.keyboardWillShow.bind(this)
@@ -114,7 +113,7 @@ export default class HomeScreen extends Component {
         <View style={{ flexDirection: 'row' }}>
           <TextInput
             multiline
-            style={[styles.baseTextInput, styles.messageTextInput]}
+            style={[styles.textInput, styles.messageTextInput]}
             onChangeText={this._onMessageTextChanged}
             value={this.state.messageToSend}
             placeholder={'send a message'}
@@ -128,15 +127,39 @@ export default class HomeScreen extends Component {
   render() {
     return (
       <View style={styles.container}>
-        <FlatList
-          inverted
-          data={this.state.messages}
-          renderItem={this._renderItem}
-          style={styles.resultsListContainer}
-          keyExtractor={(_, index) => index.toString()}
-          showsVerticalScrollIndicator={true}
-        />
-        {this._renderFooter()}
+        <View style={styles.contentContainer}>
+          <Image
+            source={require('./images/sendMessage.png')}
+            style={styles.logo}
+          />
+          <TextInput
+            placeholderTextColor="#b2b2b2"
+            style={styles.textInput}
+            onChangeText={data => this.setState({ visaNumber: data })}
+            value={this.state.visaNumber}
+            placeholder="Hajj Visa Number"
+          />
+          <TextInput
+            placeholderTextColor="#b2b2b2"
+            style={styles.textInput}
+            onChangeText={data => this.setState({ passport: data })}
+            value={this.state.passport}
+            placeholder={'Passport Number'}
+          />
+          <TouchableOpacity
+            style={styles.button}
+            onPress={() => {
+              this.props.navigation.navigate('Main')
+            }}
+          >
+            <Text style={styles.buttonText}>Start Hajj Journey</Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { backgroundColor: '#00a4ce' }]}
+          >
+            <Text style={styles.buttonText}>Chat with Belal</Text>
+          </TouchableOpacity>
+        </View>
       </View>
     )
   }
