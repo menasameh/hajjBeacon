@@ -10,7 +10,6 @@ import {
   FlatList,
 } from 'react-native'
 import styles from './styles'
-import _ from 'underscore'
 
 const me = 'john'
 
@@ -21,7 +20,7 @@ export default class HomeScreen extends Component {
     super(props)
     this.keyboardHeight = new Animated.Value(0)
     this.state = {
-      messages: [],
+      messages: [{ location: true }],
       messageToSend: '',
       isKeyboardOpen: false,
     }
@@ -80,6 +79,18 @@ export default class HomeScreen extends Component {
   }
 
   _renderItem = ({ item }) => {
+    if (item.location) {
+      return (
+        <Image
+          style={{
+            width: '80%',
+            height: 150,
+            resizeMode: 'contain',
+          }}
+          source={require('./images/chat_thread_baik.png')}
+        />
+      )
+    }
     return (
       <Text
         style={[

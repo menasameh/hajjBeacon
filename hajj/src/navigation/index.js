@@ -20,6 +20,6 @@ export default StackNavigator(
     },
   },
   {
-    initialRouteName: 'Main',
+    initialRouteName: 'Home',
   }
 )

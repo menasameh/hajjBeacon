@@ -128,10 +128,7 @@ export default class HomeScreen extends Component {
     return (
       <View style={styles.container}>
         <View style={styles.contentContainer}>
-          <Image
-            source={require('./images/sendMessage.png')}
-            style={styles.logo}
-          />
+          <Image source={require('./images/logo.png')} style={styles.logo} />
           <TextInput
             placeholderTextColor="#b2b2b2"
             style={styles.textInput}

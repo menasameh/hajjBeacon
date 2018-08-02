@@ -10,12 +10,14 @@ const styles = StyleSheet.create({
     backgroundColor: '#ffffff',
   },
   logo: {
-    width: 184,
+    width: 190,
     height: 192,
     marginTop: 10,
     marginBottom: 30,
+    marginLeft: -20,
   },
   button: {
+    marginHorizontal: 20,
     height: 60,
     borderRadius: 8,
     marginVertical: 5,
@@ -59,10 +61,12 @@ const styles = StyleSheet.create({
     marginBottom: -7,
   },
   textIn: {
+    width: 180,
     fontFamily: 'Montserrat',
     fontSize: 12,
     fontWeight: '600',
     color: '#178967',
+    textAlign: 'center',
     paddingVertical: 16,
     paddingHorizontal: 26,
     marginTop: 15,
@@ -70,13 +74,14 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   contentContainer: {
-    marginBottom: 15,
     marginHorizontal: 15,
+    marginTop: 15,
   },
   contentUpper: {
     backgroundColor: '#ffffff',
     height: 130,
-    marginTop: -70,
+    marginTop: -90,
+    paddingLeft: 20,
     borderColor: '#006d4b',
     borderWidth: 1,
     borderTopLeftRadius: 10,
@@ -89,6 +94,7 @@ const styles = StyleSheet.create({
     height: 60,
     borderBottomLeftRadius: 10,
     borderBottomRightRadius: 10,
+    justifyContent: 'center',
   },
   icon: {
     width: 67,
@@ -122,6 +128,29 @@ const styles = StyleSheet.create({
     fontSize: 10,
     fontStyle: 'italic',
     color: '#178967',
+  },
+  buttonContainer: {
+    fontFamily: 'Montserrat',
+    fontSize: 14,
+    fontWeight: '600',
+    fontStyle: 'normal',
+    letterSpacing: 0,
+    textAlign: 'center',
+    color: '#ffffff',
+  },
+  smallIcon: {
+    position: 'absolute',
+    width: 25,
+    height: 25,
+    top: 15,
+    right: 20,
+  },
+  bigIcon: {
+    alignSelf: 'center',
+    width: 300,
+    height: 90,
+    marginTop: -10,
+    resizeMode: 'contain',
   },
 })
 
