@@ -28,9 +28,6 @@ export default class HomeScreen extends Component {
 
   componentDidMount() {
     firebase.initApp()
-    beacons.requestPermission()
-    beacons.startBeacons()
-    beacons.registerBeaconsListeners()
     firebase.listenToNode('chat', messages => {
       messages = messages['john']
       console.log(messages)
@@ -56,8 +53,6 @@ export default class HomeScreen extends Component {
   }
 
   componentWillUnmount() {
-    beacons.stopBeacons()
-    beacons.removeListeners()
     this.keyboardWillShowListener && this.keyboardWillShowListener.remove()
     this.keyboardWillHideListener && this.keyboardWillHideListener.remove()
   }

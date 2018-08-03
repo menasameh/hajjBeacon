@@ -7,11 +7,9 @@ import {
   TextInput,
   Keyboard,
   Animated,
-  FlatList,
 } from 'react-native'
 import styles from './styles'
-import _ from 'underscore'
-
+import Modal from 'react-native-modal'
 import { beacons, firebase } from '../../utils'
 
 export default class HomeScreen extends Component {
@@ -19,109 +17,50 @@ export default class HomeScreen extends Component {
     super(props)
     this.keyboardHeight = new Animated.Value(0)
     this.state = {
-      messages: [{ message: 'somcvdc text', sender: 'motawef' }],
-      messageToSend: '',
-      isKeyboardOpen: false,
+      message: '',
+      isShown: false,
     }
   }
 
+  currentState = 'init'
+
+  getState = distance => {
+    return distance > 0.5 ? 'out' : 'in'
+  }
+
   componentDidMount() {
-    // firebase.initApp()
     beacons.requestPermission()
     beacons.startBeacons()
-    beacons.registerBeaconsListeners()
-    // firebase.listenToNode('chat', messages => {
-    //   this.setState({
-    //     messages: Object.keys(messages).map(key => ({
-    //       ...messages[key],
-    //       id: key,
-    //     })),
-    //   })
-    // })
-    this.keyboardWillShowListener = Keyboard.addListener(
-      'keyboardWillShow',
-      this.keyboardWillShow.bind(this)
-    )
-    this.keyboardWillHideListener = Keyboard.addListener(
-      'keyboardWillHide',
-      this.keyboardWillHide.bind(this)
-    )
+    beacons.registerBeaconsListeners(distance => {
+      if (this.currentState === 'init') {
+        this.currentState = this.getState(distance)
+      } else if (this.currentState === 'in') {
+        state = this.getState(distance)
+        if (state === 'out') {
+          this.currentState = this.getState(distance)
+          this.setState({
+            message: 'You left the area',
+            isShown: true,
+          })
+          //departure
+        }
+      } else if (this.currentState === 'out') {
+        state = this.getState(distance)
+        if (state === 'in') {
+          this.currentState = this.getState(distance)
+          this.setState({
+            message: 'You entered the area',
+            isShown: true,
+          })
+          //arrival
+        }
+      }
+    })
   }
 
   componentWillUnmount() {
     beacons.stopBeacons()
     beacons.removeListeners()
-    this.keyboardWillShowListener.remove()
-    this.keyboardWillHideListener.remove()
-  }
-
-  keyboardWillShow(event) {
-    this.setState({ isKeyboardOpen: true })
-    Animated.timing(this.keyboardHeight, {
-      duration: event.duration,
-      toValue: event.endCoordinates.height - 50,
-    }).start()
-  }
-
-  keyboardWillHide(event) {
-    this.setState({ isKeyboardOpen: false })
-    Animated.timing(this.keyboardHeight, {
-      duration: event.duration,
-      toValue: 0,
-    }).start()
-  }
-
-  _renderItem = ({ item }) => {
-    return <Text>{`msg: ${item.message}, sender: ${item.sender}`}</Text>
-  }
-
-  _sendMessage = _ => {
-    if (this.state.messageToSend.trim().length) {
-      //   this.props.sendMessage(this.state.messageToSend.trim())
-      firebase.add('chat', {
-        message: this.state.messageToSend.trim(),
-        sender: 'hajj 1',
-      })
-      this.setState({
-        messageToSend: '',
-      })
-    }
-  }
-
-  _renderAccessoryButton() {
-    if (!this.state.messageToSend.trim().length) return null
-    return (
-      <TouchableOpacity
-        onPress={this._sendMessage}
-        style={styles.sendButtonContainer}
-      >
-        <Image
-          style={styles.sendButton}
-          source={require('./images/sendMessage.png')}
-        />
-      </TouchableOpacity>
-    )
-  }
-
-  _onMessageTextChanged = messageToSend => this.setState({ messageToSend })
-
-  _renderFooter() {
-    return (
-      <Animated.View
-        style={[{ marginBottom: this.keyboardHeight }, styles.footerContainer]}
-      >
-        <View style={{ flexDirection: 'row' }}>
-          <TextInput
-            multiline
-            style={[styles.textInput, styles.messageTextInput]}
-            onChangeText={this._onMessageTextChanged}
-            value={this.state.messageToSend}
-            placeholder={'send a message'}
-          />
-        </View>
-        {this._renderAccessoryButton()}
-      </Animated.View>
-    )
   }
 
   render() {
@@ -157,6 +96,34 @@ export default class HomeScreen extends Component {
             <Text style={styles.buttonText}>Chat with Belal</Text>
           </TouchableOpacity>
         </View>
+        <Modal isVisible={this.state.isShown}>
+          <View
+            style={{
+              backgroundColor: '#ffffff',
+              borderRadius: 10,
+              marginHorizontal: 20,
+            }}
+          >
+            <Text style={{ margin: 20, fontSize: 20, color: '#178967' }}>
+              {this.state.message}
+            </Text>
+            <TouchableOpacity
+              style={{
+                backgroundColor: '#178967',
+                height: 50,
+                borderBottomLeftRadius: 10,
+                borderBottomRightRadius: 10,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}
+              onPress={() => {
+                this.setState({ isShown: false })
+              }}
+            >
+              <Text style={{ color: '#ffffff', fontSize: 20 }}>Ok</Text>
+            </TouchableOpacity>
+          </View>
+        </Modal>
       </View>
     )
   }

@@ -1,18 +1,6 @@
 import React, { Component } from 'react'
-import {
-  View,
-  Text,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Keyboard,
-  Animated,
-  FlatList,
-} from 'react-native'
+import { View, Text, Image, TouchableOpacity } from 'react-native'
 import styles from './styles'
-import _ from 'underscore'
-
-import { beacons, firebase } from '../../utils'
 
 export default class Main extends Component {
   state = {

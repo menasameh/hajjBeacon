@@ -11,6 +11,7 @@
     "react": "16.4.1",
     "react-native": "0.56.0",
     "react-native-beacons-manager": "1.0.7",
+    "react-native-modal": "^6.5.0",
     "react-navigation": "^2.9.3",
     "react-redux": "^5.0.7",
     "redux": "^4.0.0",

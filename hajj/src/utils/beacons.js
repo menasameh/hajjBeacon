@@ -60,10 +60,11 @@ const startBeacons = () => {
     })
 }
 
-const registerBeaconsListeners = () => {
+const registerBeaconsListeners = func => {
   DeviceEventEmitter.addListener('beaconsDidRange', data => {
     if (data && data.beacons && data.beacons.length) {
       log && console.log('Found range!', data.beacons[0])
+      func && func(data.beacons[0].distance)
     }
   })
   DeviceEventEmitter.addListener('regionDidEnter', data => {
